@@ -61,52 +61,105 @@ class Graph:
 
     def bft(self, starting_vertex_id):
         print('BFT')
-        # Create an empty queue
         q = Queue()
-        # Create an empty set of visited vertices
-        visited = set()
-        # Put the starting vertex in our Queue
+        visited = []
         q.enqueue(starting_vertex_id)
-        # While the queue is not empty....
+
         print('bft queue outer:', q.queue)
+
         while q.size() > 0:
-            # Dequeue the first node from the queue
             print('bft before queue:', q.queue)
             v = q.dequeue()
             print('bft after queue:', q.queue)
-            # If that node has not been visted...
-            if v not in visited:
-                # Mark it as visited
-                print('bft not visited', v)
-                visited.add(v)
-                print('bft visited arr:', visited)
 
-                # Then, put all of it's children into the queue
+            if v not in visited:
+                print('bft not visited', v)
+                visited.append(v)
+                print('bft visited arr:', visited)
                 for neighbor in self.vertices[v]:
                     print('bft neighbor', neighbor)
                     q.enqueue(neighbor)
 
+    def bfs(self, starting_vertex_id, endpoint):
+        print(f"start: {starting_vertex_id} end: {endpoint}")
+        q = Queue()
+        visited = []
+        q.enqueue(starting_vertex_id)
+
+        print('bfs queue outer:', q.queue)
+
+        while q.size() > 0:
+            print('bfs before queue:', q.queue)
+            v = q.dequeue()
+            print('bfs after queue:', q.queue)
+            if v == endpoint:
+                visited.append(v)
+                break
+            if v not in visited:
+                print('bfs not visited', v)
+                visited.append(v)
+                print('bfs visited arr:', visited)
+                for neighbor in self.vertices[v]:
+                    # makes sure the shortest possible route is found
+                    if endpoint in self.vertices[neighbor]:
+                        visited.append(neighbor)
+                        visited.append(endpoint)
+                        break
+                    else:
+                        q.enqueue(neighbor)
+
+        print("BFS", visited)
+        return visited
+
+    def dftr(self, start, stack, visited):
+        print(
+            f"FIRST: node:{start},neighbors {self.vertices[start]} visited: {visited} \n Stack:{stack.stack}")
+
+        if visited == None:
+            print(f"VISITED NONE: node:{start}, visited: {visited}")
+            return
+        if start in visited:
+            print('start in visited')
+            if not stack.stack:
+                print('no stack')
+                return visited
+
+            node = stack.pop()
+            print(
+                f"node: {node} neighbors {self.vertices[start]} \n stack: {stack.stack}")
+            for neighbor in self.vertices[start]:
+                if neighbor not in visited:
+                    stack.push(neighbor)
+                    visited = self.dftr(neighbor, stack, visited)
+                    return visited
+            visited = self.dftr(node, stack, visited)
+            return visited
+
+        stack.push(start)
+        visited.append(start)
+        for neighbor in self.vertices[start]:
+            print(
+                f"POST-PUSH -- node:{start}: neighbors {self.vertices[start]} nextNode: {neighbor}, visited: {visited} \n Stack:{stack.stack}")
+            visited = self.dftr(neighbor, stack, visited)
+            print("other", visited)
+
     def dft(self, starting_vertex_id):
         print('DFT')
-        # Create an empty stack
+
         s = Stack()
-        # Create an empty set of visited vertices
-        visited = set()
-        # Put the starting vertex in our Stack
-        s.push(starting_vertex_id)
-        # While the stack is not empty....
-        while s.size() > 0:
-            # Pop the top node from the stack
-            print('before', s.stack)
+
+        visited = []
+
+        self.dftr(starting_vertex_id, s, visited)
+        """ s.push(starting_vertex_id) """
+
+        """ while s.size() > 0:
             v = s.pop()
-            print('after', s.stack)
-            # If that node has not been visted...
             if v not in visited:
-                # Mark it as visited
-                print('not visited', v)
                 visited.add(v)
-                print('visited arr: ', visited)
-                # Then, put all of it's children into the stack
                 for neighbor in self.vertices[v]:
-                    print('neighbors: ', self.vertices[v], neighbor)
-                    s.push(neighbor)
+                    print('neighbor: ', neighbor)
+                    s.push(neighbor) """
+        print("OUTER VISITED", visited)
+        print("OUTER stack", s.stack)
+        return visited

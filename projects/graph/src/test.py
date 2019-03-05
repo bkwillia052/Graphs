@@ -59,32 +59,57 @@ class Graph:
         else:
             raise IndexError("That vertex does not exist")
 
-    def bft(self, starting_vertex_id):
+    def bft(self, starting_vertex_id, endpoint):
         print('BFT')
-        # Create an empty queue
         q = Queue()
-        # Create an empty set of visited vertices
-        visited = set()
-        # Put the starting vertex in our Queue
+        visited = []
         q.enqueue(starting_vertex_id)
-        # While the queue is not empty....
+
         print('bft queue outer:', q.queue)
+
         while q.size() > 0:
-            # Dequeue the first node from the queue
             print('bft before queue:', q.queue)
             v = q.dequeue()
             print('bft after queue:', q.queue)
-            # If that node has not been visted...
-            if v not in visited:
-                # Mark it as visited
-                print('bft not visited', v)
-                visited.add(v)
-                print('bft visited arr:', visited)
 
-                # Then, put all of it's children into the queue
+            if v not in visited:
+                print('bft not visited', v)
+                visited.append(v)
+                print('bft visited arr:', visited)
                 for neighbor in self.vertices[v]:
                     print('bft neighbor', neighbor)
                     q.enqueue(neighbor)
+
+    def bfs(self, starting_vertex_id, endpoint):
+        print(f"start: {starting_vertex_id} end: {endpoint}")
+        q = Queue()
+        visited = []
+        q.enqueue(starting_vertex_id)
+
+        print('bfs queue outer:', q.queue)
+
+        while q.size() > 0:
+            print('bfs before queue:', q.queue)
+            v = q.dequeue()
+            print('bfs after queue:', q.queue)
+            if v == endpoint:
+                visited.append(v)
+                break
+            if v not in visited:
+                print('bfs not visited', v)
+                visited.append(v)
+                print('bfs visited arr:', visited)
+                for neighbor in self.vertices[v]:
+                    # makes sure the shortest possible route is found
+                    if endpoint in self.vertices[neighbor]:
+                        visited.append(neighbor)
+                        visited.append(endpoint)
+                        break
+                    else:
+                        q.enqueue(neighbor)
+
+        print("BFS", visited)
+        return visited
 
     def dftr(self, start, stack, visited):
         print(
@@ -159,4 +184,4 @@ graph.add_directed_edge('3', '5')
 graph.add_directed_edge('2', '3')
 graph.add_directed_edge('4', '6')
 print(graph.vertices)
-graph.dft('1')
+graph.bfs('1', '5')
