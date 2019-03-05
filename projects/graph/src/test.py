@@ -164,6 +164,53 @@ class Graph:
         print("OUTER stack", s.stack)
         return visited
 
+    def dfsr(self, start, stack, visited, endpoint):
+
+        if start == endpoint:
+            print('ENFOUND')
+            visited.append(endpoint)
+            return visited
+        print(
+            f"FIRST: node:{start},neighbors {self.vertices[start]} visited: {visited} \n Stack:{stack.stack}")
+
+        if visited == None:
+            print(f"VISITED NONE: node:{start}, visited: {visited}")
+            return
+        if start in visited:
+            print('start in visited')
+            if not stack.stack:
+                print('no stack')
+                return visited
+
+            node = stack.pop()
+            print(
+                f"node: {node} neighbors {self.vertices[start]} \n stack: {stack.stack}")
+            for neighbor in self.vertices[start]:
+                if neighbor not in visited:
+                    stack.push(neighbor)
+                    visited = self.dfsr(neighbor, stack, visited, endpoint)
+                    return visited
+            visited = self.dfsr(node, stack, visited, endpoint)
+            return visited
+
+        stack.push(start)
+        visited.append(start)
+        for neighbor in self.vertices[start]:
+            print(
+                f"POST-PUSH -- node:{start}: neighbors {self.vertices[start]} nextNode: {neighbor}, visited: {visited} \n Stack:{stack.stack}")
+            visited = self.dfsr(neighbor, stack, visited, endpoint)
+            print("other", visited)
+
+    def dfs(self, start, endpoint):
+        s = Stack()
+
+        visited = []
+
+        
+        self.dfsr(start, s, visited, endpoint)
+        print("DFS TOTAL RETURN", visited)
+        return visited
+
 
 graph = Graph()  # Instantiate your graph
 graph.add_vertex('1')
@@ -184,4 +231,4 @@ graph.add_directed_edge('3', '5')
 graph.add_directed_edge('2', '3')
 graph.add_directed_edge('4', '6')
 print(graph.vertices)
-graph.bfs('1', '5')
+graph.dfs('1', '5')
