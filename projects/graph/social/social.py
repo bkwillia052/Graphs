@@ -1,8 +1,8 @@
 import random
 from collections import defaultdict
+from queue import *
 
-
-class Queue():
+""" class Queue(): #Going to try solution using a library queue
     def __init__(self):
         self.queue = []
 
@@ -16,7 +16,7 @@ class Queue():
             return None
 
     def size(self):
-        return (len(self.queue))
+        return (len(self.queue)) """
 
 
 class User:
@@ -91,16 +91,21 @@ class SocialGraph:
         indices[starting_vertex_id] = 0
         index = 0
         while q.size() > 0:
-
+            print("queue:", q.queue)
             v = q.dequeue()
             print('node:', v)
 
             if v not in path:
                 path.append(v)
-
-            print("path:", path)
+            print('path:', path)
+            remove = False
+            for neighbor in self.friendships[v]:
+                if neighbor in self.friendships[starting_vertex_id] and neighbor != starting_vertex_id:
+                    remove = True
+            if remove:
+                print("INDICES:", indices[v])
+                path.pop(indices[v])
             print('indices', indices)
-
             if v not in visited:
 
                 visited[v] = []
@@ -130,8 +135,24 @@ class SocialGraph:
 
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
-        visited = self.bft(userID)
-        print(self.friendships)
+        q = Queue()
+
+        q.put([userID])
+
+        while q.qsize() > 0:
+
+            path = q.get()
+            print(path)
+            v = path[-1]
+            print(v)
+            if v not in visited:
+
+                visited[v] = path
+
+                for friendship in self.friendships[v]:
+                    if friendship not in visited:
+                        q.put(list(path) + [friendship])
+
         return visited
 
 
