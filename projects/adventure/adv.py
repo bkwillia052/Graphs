@@ -36,6 +36,13 @@ class Stack():
         self.path[start.id] = 'start'
         self.stillPath = [start.id]
         self.revPath = []
+        self.totalPath = []
+        self.inverse = {
+            'n': 's',
+            'w': 'e',
+            'e': 'w',
+            's': 'n'
+        }
 
     def push(self, value):
         self.stack.append(value)
@@ -50,6 +57,10 @@ class Stack():
     def addToPath(self, value, oppDirection):
         self.path[value] = oppDirection
         self.revPath.append(oppDirection)
+        self.totalPath.append(self.inverse[oppDirection])
+
+    def addToTotalPath(self, value):
+        self.totalPath.append(value)
 
     def size(self):
         return (len(self.stack))
@@ -116,9 +127,25 @@ def traverseMap(player):
                                         return """
 
                         unknownFound = False
+
                         idx = 0
+                        totalpath = stack.revPath
+                        somethingFound = False
                         while unknownFound == False:
+                            for rm in graph:
+                                print(rm)
+                                for i in graph[rm]:
+                                    print(i)
+                                    if graph[rm][i] == '?':
+                                        somethingFound = True
+                            if somethingFound == False:
+                                print(graph)
+                                print('DONE')
+                                print(f"Final Path: {stack.totalPath}")
+                                return stack.totalPath
                             player.travel(revPath[idx])
+                            stack.addToTotalPath(
+                                revPath[idx])  # adding to path
                             curRoom = player.currentRoom.id
                             print(
                                 f'3.61 now at room {curRoom}, {graph[curRoom]}')
@@ -149,12 +176,13 @@ def traverseMap(player):
                         f"5 Path of Rooms is {stack.path}")
 
                     player.travel(dirPriority[index])
+
                     direction = dirPriority[index]
             if needsReset == True:
                 print(f"5.5 NEEDS RESET========== \n ************ \n *********** \n \n:")
                 prevRoom = player.currentRoom.id
-                graph[prevRoom][direction] = player.currentRoom.id
                 player.travel(direction)
+                graph[prevRoom][direction] = player.currentRoom.id
                 stack.push(player.currentRoom)
                 stack.addToPath(prevRoom, inverse[direction])
                 currentRoom = player.currentRoom.id
@@ -224,7 +252,6 @@ def traverseMap(player):
             stack.addToPath(room.id, inverse[direction])
 
 
-traverseMap(player)
 # Start from a room, list the exits
 # Add the room and its exits to the graph
 #
@@ -239,7 +266,6 @@ traverseMap(player)
 #   #keep a dict that maps each direction to its inverse
 #   #add the prev room to the current room
 # Repeat
-
 # LOGIC FOR ROOM TRAVERSAL TO POPULATE TRAVERSAL PATH
 """ 
 move to room, update
@@ -256,6 +282,7 @@ keep track of the path of along the way to the nearest neighbor
 # once you get to a dead end, you'll want to do BFS to find the nearest room with unexplored exits
 # once you get to a point where your BFS can no longer find an unexplored room, you're done.
 """ a possible method for finding the quickest solution is following the 'west wall'  """
+traversalPath = traverseMap(player)
 
 world.printRooms()
 
