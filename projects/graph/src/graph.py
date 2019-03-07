@@ -59,26 +59,23 @@ class Graph:
         else:
             raise IndexError("That vertex does not exist")
     #BREADTH-FIRST TRAVERSAL
-    def bft(self, starting_vertex_id):
-        print('BFT')
+    def bft(self, starting_vertex_id):   
         q = Queue()
         visited = []
         q.enqueue(starting_vertex_id)
 
-        print('bft queue outer:', q.queue)
-
         while q.size() > 0:
-            print('bft before queue:', q.queue)
+            
             v = q.dequeue()
-            print('bft after queue:', q.queue)
-
+        
             if v not in visited:
-                print('bft not visited', v)
+               
                 visited.append(v)
-                print('bft visited arr:', visited)
+                
                 for neighbor in self.vertices[v]:
                     print('bft neighbor', neighbor)
                     q.enqueue(neighbor)
+                    
     #BREADTH-FIRST SEARCH
     def bfs(self, starting_vertex_id, endpoint):
         print(f"start: {starting_vertex_id} end: {endpoint}")
@@ -150,16 +147,16 @@ class Graph:
 
         visited = []
 
-        self.dftr(starting_vertex_id, s, visited)
-        """ s.push(starting_vertex_id) """
+        """ self.dftr(starting_vertex_id, s, visited) """
+        s.push(starting_vertex_id)
 
-        """ while s.size() > 0:
+        while s.size() > 0:
             v = s.pop()
             if v not in visited:
                 visited.add(v)
                 for neighbor in self.vertices[v]:
                     print('neighbor: ', neighbor)
-                    s.push(neighbor) """
+                    s.push(neighbor)
         print("OUTER VISITED", visited)
         print("OUTER stack", s.stack)
         return visited
