@@ -34,9 +34,11 @@ class Stack():
         self.stack = [start]
         self.path = {}
         self.path[start.id] = 'start'
+        self.stillPath = []
 
     def push(self, value):
         self.stack.append(value)
+        self.stillPath.append(value)
 
     def pop(self):
         if self.size() > 0:
@@ -117,14 +119,57 @@ def traverseMap(player):
                 f"6 moving {direction} from Room {prevRoom} to Room {player.currentRoom.id}")
             stack.push(player.currentRoom)
             stack.addToPath(room.id, inverse[direction])
+
         print(f"6.5 Made it to 0; exits are: {graph[room.id]}")
-        unvisited = False
+        hasUnvisited = False
         for ex in rooms:
             if graph[room.id][ex] == '?':
-                unvisited = True
+                hasUnvisited = True
                 break
-        if unvisited == True:
-            print(f"7 Next loop")
+        firstLoop = True
+
+        print(f"6.6 Path is {stack.path}")
+        if len(stack.path) != 1:
+            firstLoop = False
+
+        if hasUnvisited == True and firstLoop == False:
+            print(f"7 NEXT LOOP ================ \n \n")
+            direction = 'w'
+            print(
+                f"8 Direction of the previous room: {stack.path[prevRoom]}, prevRoom: {prevRoom}, current Room: {room.id} direction: {direction}")
+
+            print(f'room exit directions:{graph[room.id][direction]}')
+            if graph[room.id][direction] == '?':
+                player.travel(direction)
+
+            if stack.path[prevRoom] != direction and graph[room.id][direction] == '?':
+                player.travel(direction)
+
+            if player.currentRoom.id == room.id:
+                index = 0
+
+                while player.currentRoom.id == room.id:
+                    index += 1
+                    print(
+                        f"9 Trying to move {dirPriority[index]} from {room.id}")
+                    if index > 3:
+                        print("End")
+                        return
+                    if stack.path[prevRoom] == dirPriority[index]:
+                        index += 1
+
+                    print(
+                        f"10 Path of Rooms is {stack.path}")
+
+                    player.travel(dirPriority[index])
+                    direction = dirPriority[index]
+
+            graph[room.id][direction] = player.currentRoom.id
+            prevRoom = room.id
+            print(
+                f"11 moving {direction} from Room {prevRoom} to Room {player.currentRoom.id}")
+            stack.push(player.currentRoom)
+            stack.addToPath(room.id, inverse[direction])
 
 
 traverseMap(player)
