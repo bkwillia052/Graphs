@@ -1,8 +1,28 @@
+import random
+from collections import defaultdict
+from queue import *
+
+""" class Queue(): #Going to try solution using a library queue
+    def __init__(self):
+        self.queue = []
+
+    def enqueue(self, value):
+        self.queue.append(value)
+
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+
+    def size(self):
+        return (len(self.queue)) """
 
 
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -14,6 +34,8 @@ class SocialGraph:
         """
         Creates a bi-directional friendship
         """
+        """  """
+        print(f"user: {userID} friend: {friendID}")
         if userID == friendID:
             print("WARNING: You cannot be friends with yourself")
         elif friendID in self.friendships[userID] or userID in self.friendships[friendID]:
@@ -31,15 +53,16 @@ class SocialGraph:
         self.friendships[self.lastID] = set()
 
     def populateGraph(self, numUsers, avgFriendships):
-        """
-        Takes a number of users and an average number of friendships
+        """ Takes a number of users and an average number of friendships
         as arguments
 
         Creates that number of users and a randomly distributed friendships
         between those users.
 
-        The number of users must be greater than the average number of friendships.
+        The number of users must be greater than the average number of friendships. 
+
         """
+
         # Reset graph
         self.lastID = 0
         self.users = {}
@@ -47,8 +70,58 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        random.seed(13)
+        for userID in range(1, numUsers+1):
+            self.users[userID] = User(userID)
+            self.friendships[userID] = set()
 
         # Create friendships
+        for userID in range(1, numUsers+1):
+            print(userID)
+            for num in range(random.randint(0, 3)):
+                self.addFriendship(userID, random.randint(userID, numUsers))
+
+    def bft(self, starting_vertex_id):
+        print(f"start: {starting_vertex_id}")
+        q = Queue()
+        visited = {}
+        q.enqueue(starting_vertex_id)
+        path = [starting_vertex_id]
+        indices = {}
+        indices[starting_vertex_id] = 0
+        index = 0
+        while q.size() > 0:
+            print("queue:", q.queue)
+            v = q.dequeue()
+            print('node:', v)
+
+            if v not in path:
+                path.append(v)
+            print('path:', path)
+            remove = False
+            for neighbor in self.friendships[v]:
+                if neighbor in self.friendships[starting_vertex_id] and neighbor != starting_vertex_id:
+                    remove = True
+            if remove:
+                print("INDICES:", indices[v])
+                path.pop(indices[v])
+            print('indices', indices)
+            if v not in visited:
+
+                visited[v] = []
+
+                for neighbor in self.friendships[v]:
+                    if neighbor not in indices:
+                        index += 1
+                        indices[neighbor] = index
+                    visited[v].append(neighbor)
+                    q.enqueue(neighbor)
+
+                if self.friendships[v] == None:
+                    visited[v].append('No Connections')
+
+        print("BFt", visited)
+        return visited
 
     def getAllSocialPaths(self, userID):
         """
@@ -59,8 +132,27 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
+
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+
+        q.put([userID])
+
+        while q.qsize() > 0:
+
+            path = q.get()
+            print(path)
+            v = path[-1]
+            print(v)
+            if v not in visited:
+
+                visited[v] = path
+
+                for friendship in self.friendships[v]:
+                    if friendship not in visited:
+                        q.put(list(path) + [friendship])
+
         return visited
 
 

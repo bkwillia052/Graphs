@@ -58,25 +58,28 @@ class Graph:
             self.vertices[v2].add(v1)
         else:
             raise IndexError("That vertex does not exist")
-    #BREADTH-FIRST TRAVERSAL
-    def bft(self, starting_vertex_id):   
+
+    def bft(self, starting_vertex_id, endpoint):
+        print('BFT')
         q = Queue()
         visited = []
         q.enqueue(starting_vertex_id)
 
+        print('bft queue outer:', q.queue)
+
         while q.size() > 0:
-            
+            print('bft before queue:', q.queue)
             v = q.dequeue()
-        
+            print('bft after queue:', q.queue)
+
             if v not in visited:
-               
+                print('bft not visited', v)
                 visited.append(v)
-                
+                print('bft visited arr:', visited)
                 for neighbor in self.vertices[v]:
                     print('bft neighbor', neighbor)
                     q.enqueue(neighbor)
-                    
-    #BREADTH-FIRST SEARCH
+
     def bfs(self, starting_vertex_id, endpoint):
         print(f"start: {starting_vertex_id} end: {endpoint}")
         q = Queue()
@@ -107,7 +110,7 @@ class Graph:
 
         print("BFS", visited)
         return visited
-    #DEPTH-FIRST TRAVERSAL RECURSIVE FUNCTION
+
     def dftr(self, start, stack, visited):
         print(
             f"FIRST: node:{start},neighbors {self.vertices[start]} visited: {visited} \n Stack:{stack.stack}")
@@ -139,7 +142,7 @@ class Graph:
                 f"POST-PUSH -- node:{start}: neighbors {self.vertices[start]} nextNode: {neighbor}, visited: {visited} \n Stack:{stack.stack}")
             visited = self.dftr(neighbor, stack, visited)
             print("other", visited)
-    #DEPTH-FIRST TRAVERSAL
+
     def dft(self, starting_vertex_id):
         print('DFT')
 
@@ -147,20 +150,20 @@ class Graph:
 
         visited = []
 
-        """ self.dftr(starting_vertex_id, s, visited) """
-        s.push(starting_vertex_id)
+        self.dftr(starting_vertex_id, s, visited)
+        """ s.push(starting_vertex_id) """
 
-        while s.size() > 0:
+        """ while s.size() > 0:
             v = s.pop()
             if v not in visited:
                 visited.add(v)
                 for neighbor in self.vertices[v]:
                     print('neighbor: ', neighbor)
-                    s.push(neighbor)
+                    s.push(neighbor) """
         print("OUTER VISITED", visited)
         print("OUTER stack", s.stack)
         return visited
-    #DEPTH-FIRST SEARCH RECURSIVE FUNCTION
+
     def dfsr(self, start, stack, visited, endpoint):
 
         if start == endpoint:
@@ -197,12 +200,35 @@ class Graph:
                 f"POST-PUSH -- node:{start}: neighbors {self.vertices[start]} nextNode: {neighbor}, visited: {visited} \n Stack:{stack.stack}")
             visited = self.dfsr(neighbor, stack, visited, endpoint)
             print("other", visited)
-    #DEPTH-FIRST SEARCH
+
     def dfs(self, start, endpoint):
         s = Stack()
 
         visited = []
 
+        
         self.dfsr(start, s, visited, endpoint)
         print("DFS TOTAL RETURN", visited)
         return visited
+
+
+graph = Graph()  # Instantiate your graph
+graph.add_vertex('1')
+graph.add_vertex('2')
+graph.add_vertex('3')
+graph.add_vertex('4')
+graph.add_vertex('5')
+graph.add_vertex('6')
+graph.add_vertex('7')
+graph.add_directed_edge('5', '3')
+graph.add_directed_edge('6', '3')
+graph.add_directed_edge('7', '1')
+graph.add_directed_edge('4', '7')
+graph.add_directed_edge('1', '2')
+graph.add_directed_edge('7', '6')
+graph.add_directed_edge('2', '4')
+graph.add_directed_edge('3', '5')
+graph.add_directed_edge('2', '3')
+graph.add_directed_edge('4', '6')
+print(graph.vertices)
+graph.dfs('1', '5')
