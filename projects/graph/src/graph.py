@@ -73,7 +73,6 @@ class Graph:
                 visited.append(v)
                 
                 for neighbor in self.vertices[v]:
-                    print('bft neighbor', neighbor)
                     q.enqueue(neighbor)
                     
     #BREADTH-FIRST SEARCH
@@ -147,13 +146,13 @@ class Graph:
 
         visited = []
 
-        """ self.dftr(starting_vertex_id, s, visited) """
+        """ self.dftr(starting_vertex_id, s, visited) #RECURSIVE VERSION"""
         s.push(starting_vertex_id)
 
         while s.size() > 0:
             v = s.pop()
             if v not in visited:
-                visited.add(v)
+                visited.append(v)
                 for neighbor in self.vertices[v]:
                     print('neighbor: ', neighbor)
                     s.push(neighbor)
