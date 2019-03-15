@@ -9,7 +9,7 @@ def findLadders(beginWord: 'str', endWord: 'str', wordList: 'List[str]') -> 'Lis
 
     def genKeys(word):
         for i in range(m):
-            print(i)
+            
             yield word[:i] + '*' + word[i+1:]
     for w in wordList:
         for key in genKeys(w):
